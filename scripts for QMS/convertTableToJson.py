@@ -15,6 +15,10 @@ def transformHtmlTableToJson(inputPath, fileName):
     dataName = fileName.split(".")[0]
     data = collections.OrderedDict()
     data[dataName] = []
+
+    table_data[0][0] = table_data[0][0].replace(".", "")  # changing the key name for MongoDB
+                                                          # from "Slno." to "Slno"
+
     for row in table_data[1:]:
         context = collections.OrderedDict()
         for idx in range(len(table_data[0])):
