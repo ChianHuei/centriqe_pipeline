@@ -11,6 +11,30 @@ DBNAME = ""  #databse name if this database is no there, you have to create it b
 COLLECTION = ""  # collection name
 ############
 
+def pushDataToMongo(client, dbName, collectionName, filePath):
+
+    with open(filePath, 'r') as f:
+        dictionary = json.load(f)
+
+    key = filePath.split("/")[-1].split(".")[0]
+
+    try:
+        dataList = dictionary[key]
+    except:
+        print(f'Error: unable to read the dictionary from {filePath}.')
+        return
+
+    db = client[dbName]
+    collection = db[collectionName]
+    try:
+        collection.insert_many(dataList)
+        print(f'{filePath} is done, {len(dataList)} documents are upload.')
+        return True
+    except Exception as err:
+        print("uploading Fail: " + str(err))
+        return False
+
+
 def main():
 
     if len(sys.argv) < 2:
@@ -22,23 +46,8 @@ def main():
         print(f'Error: inputFilePath is invalid.')
         return
 
-    print("Loading dataset...")
-    with open(fp, 'r') as f:
-        dictionary = json.load(f)
-
-    keyName = fp.split("/")[-1].split(".")[0]
-
-    try:
-        dataList = dictionary[keyName]
-    except:
-        print(f'dictionary reading failed.')
-        return
-
     client = MongoClient(URI)
-    db = client[DBNAME]
-    collection = db[COLLECTION]
-    collection.insert_many(dataList)
-    print(f'{len(dataList)} documents are upload.')
+    pushDataToMongo(client, DBNAME, COLLECTION, fp)
 
 
 if __name__ == "__main__":

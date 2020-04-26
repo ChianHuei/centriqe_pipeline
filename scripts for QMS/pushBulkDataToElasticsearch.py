@@ -19,7 +19,7 @@ def main():
             yield report
 
     if len(sys.argv) < 2:
-        print(f'Usage: one arguments are required: inputFilePath.')
+        print(f'Usage: one argument is required: inputFilePath.')
         return
     fp = sys.argv[1]
     if not os.path.isfile(fp):
