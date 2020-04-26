@@ -7,7 +7,7 @@ import sys
 
 # variable settings
 URI = ""  #put uri here such as 'mongodb://<username>:<password>@localhost:27017/'
-DBNAME = ""  #databse name if this database is no there, you have to create it before using this script
+DBNAME = ""  #databse name if this database is not there, you have to create it before using this script
 COLLECTION = ""  # collection name
 ############
 
@@ -38,7 +38,7 @@ def pushDataToMongo(client, dbName, collectionName, filePath):
 def main():
 
     if len(sys.argv) < 2:
-        print(f'Usage: one arguments are required: inputFilePath.')
+        print(f'Usage: one more argument is required: inputFilePath.')
         return
 
     fp = sys.argv[1]
