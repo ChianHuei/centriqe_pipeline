@@ -11,6 +11,8 @@ import sys
 URL = ""  #put url here
 USERNAME = ""
 USERPASSWORD = ""
+INDEX = ""  # database's name. If the database doesn't exist, please create it before using this script.
+TYPE = ""
 ############
 
 def main():
@@ -28,13 +30,14 @@ def main():
 
     print("Loading dataset...")
     with open(fp, 'r') as f:
-        distros_dict = json.load(f)
+        tmp_dict = json.load(f)
 
     keyName = fp.split("/")[-1].split(".")[0]
+    # this uses the file name as the key to get the list of docs
     try:
-        reports = distros_dict[keyName]  # list
+        reports = tmp_dict[keyName]  # list
     except:
-        print(f'dictionary reading failed')
+        print(f'Error: dictionary reading failed.')
         return
     number_of_docs = len(reports)
     client = Elasticsearch(hosts=[URL], http_auth=(USERNAME, USERPASSWORD))
@@ -42,7 +45,7 @@ def main():
     progress = tqdm.tqdm(unit="docs", total=number_of_docs)
     successes = 0
 
-    for ok, action in streaming_bulk(client=client, index="qms", actions=generate_actions()):
+    for ok, action in streaming_bulk(client=client, index=INDEX, doc_type=TYPE, actions=generate_actions()):
         progress.update(1)
         successes += ok
     print(" %d/%d documents are uploaded." % (successes, number_of_docs))
